@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Build output
+target/
+dist/
+*.class
+*.jar
+
+# Project config (AI assistant)
+CLAUDE.md
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temp & intermediate files
+*_unpacked/
+*.tmp
+~$*
+
+# Non-source documents
+docs/templates/
+standard/
+standard.zip
+doc02
+*.docx
+*.pdf
+*.pptx
+*.xlsx
+*.xls
+*.doc
+*.ppt
+
+# Except our own source markdown
+!docs/*.md
+!docs/*.MD
+
+# Script dependencies
+scripts/node_modules/
+
+# Package locks (generated)
+package-lock.json
+scripts/package-lock.json
