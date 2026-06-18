@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         user.setPhone(dto.getPhone());
         user.setRole("USER");
         user.setReputationScore(100);
-        user.setStatus("PENDING");
+        user.setStatus("ACTIVE");
         userMapper.insert(user);
         log.info("用户注册成功: studentId={}", dto.getStudentId());
     }

@@ -16,4 +16,6 @@ public interface ProductService {
     IPage<ProductCardVO> search(String q, Integer categoryId, Integer minPrice, Integer maxPrice, String type, String sort, int page, int size);
     boolean toggleFavorite(Long userId, Long productId);
     IPage<ProductCardVO> myFavorites(Long userId, int page, int size);
+    IPage<ProductCardVO> myProducts(Long userId, int page, int size, String status);
+    void delete(Long userId, Long productId);
 }

@@ -13,6 +13,7 @@ import com.ca.module.product.entity.Product;
 import com.ca.module.product.mapper.ProductMapper;
 import com.ca.module.user.entity.User;
 import com.ca.module.user.mapper.UserMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -48,20 +49,10 @@ public class AuctionServiceImpl implements AuctionService {
     private static final String WINNER_KEY = "auction:%d:winner";
     private static final String LOCK_KEY = "auction:check:lock";
 
-    private final DefaultRedisScript<List> placeBidScript;
+    private DefaultRedisScript<List> placeBidScript;
 
-    public AuctionServiceImpl(StringRedisTemplate redisTemplate, BidMapper bidMapper,
-                               ProductMapper productMapper, UserMapper userMapper,
-                               SimpMessagingTemplate messagingTemplate,
-                               OrderService orderService) {
-        this.redisTemplate = redisTemplate;
-        this.bidMapper = bidMapper;
-        this.productMapper = productMapper;
-        this.userMapper = userMapper;
-        this.messagingTemplate = messagingTemplate;
-        this.orderService = orderService;
-
-        // 加载Lua脚本
+    @PostConstruct
+    public void init() {
         DefaultRedisScript<List> script = new DefaultRedisScript<>();
         script.setLocation(new ClassPathResource("scripts/auction_place_bid.lua"));
         script.setResultType(List.class);

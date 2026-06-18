@@ -20,6 +20,8 @@ export interface UserInfo {
   studentId: string
   username: string
   avatar: string | null
+  email?: string
+  phone?: string
   reputationScore: number
   role: 'USER' | 'ADMIN'
   status: string

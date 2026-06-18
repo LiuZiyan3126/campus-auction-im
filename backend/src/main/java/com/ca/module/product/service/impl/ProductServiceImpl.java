@@ -129,7 +129,8 @@ public class ProductServiceImpl implements ProductService {
     public ProductVO update(Long userId, Long productId, ProductUpdateDTO dto) {
         Product product = productMapper.selectById(productId);
         if (product == null) throw BusinessException.notFound("商品不存在");
-        if (!product.getSellerId().equals(userId)) {
+        User user = userMapper.selectById(userId);
+        if (!product.getSellerId().equals(userId) && !"ADMIN".equals(user.getRole())) {
             throw BusinessException.forbidden("只能编辑自己的商品");
         }
         if (dto.getTitle() != null) product.setTitle(dto.getTitle());
@@ -207,6 +208,32 @@ public class ProductServiceImpl implements ProductService {
             Product p = productMapper.selectById(fav.getProductId());
             return p != null ? toCardVO(p) : null;
         });
+    }
+
+    @Override
+    public IPage<ProductCardVO> myProducts(Long userId, int page, int size, String status) {
+        LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<Product>()
+                .eq(Product::getSellerId, userId);
+        if (status != null && !status.isBlank()) {
+            wrapper.eq(Product::getStatus, status);
+        }
+        wrapper.orderByDesc(Product::getCreatedAt);
+        Page<Product> pager = new Page<>(page, size);
+        IPage<Product> result = productMapper.selectPage(pager, wrapper);
+        return result.convert(this::toCardVO);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long userId, Long productId) {
+        Product product = productMapper.selectById(productId);
+        if (product == null) throw BusinessException.notFound("商品不存在");
+        User user = userMapper.selectById(userId);
+        if (!product.getSellerId().equals(userId) && !"ADMIN".equals(user.getRole())) {
+            throw BusinessException.forbidden("只能删除自己的商品");
+        }
+        productMapper.deleteById(productId);
+        log.info("商品删除: productId={}, operatorId={}", productId, userId);
     }
 
     private ProductCardVO toCardVO(Product p) {

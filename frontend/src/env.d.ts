@@ -5,3 +5,14 @@ declare module '*.vue' {
   const component: DefineComponent<object, object, unknown>
   export default component
 }
+
+declare module 'sockjs-client' {
+  const SockJS: new (url: string) => WebSocket
+  export default SockJS
+}
+
+declare module 'element-plus/dist/locale/zh-cn.mjs' {
+  import type { Language } from 'element-plus/es/locale'
+  const zhCn: Language
+  export default zhCn
+}

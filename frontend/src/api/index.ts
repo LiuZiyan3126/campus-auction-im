@@ -1,4 +1,5 @@
-export { default as request } from './request'
+import request from './request'
+export { request }
 
 // Auth API
 export const authApi = {
@@ -23,11 +24,13 @@ export const productApi = {
   search: (params: Record<string, unknown>) => request.get('/products/search', { params }),
   toggleFavorite: (id: number) => request.post(`/products/${id}/favorite`),
   myFavorites: (params: Record<string, unknown>) => request.get('/products/favorites', { params }),
+  myProducts: (params: Record<string, unknown>) => request.get('/products/my', { params }),
+  delete: (id: number) => request.delete(`/products/${id}`),
 }
 
 // Auction API
 export const auctionApi = {
   placeBid: (productId: number, amount: number) => request.post(`/products/${productId}/bids`, { bidAmount: amount }),
   getBids: (productId: number, params: Record<string, unknown>) => request.get(`/products/${productId}/bids`, { params }),
-  getCurrentPrice: (productId: number) => request.get(`/products/${productId}/current-price`),
+  getCurrentPrice: (productId: number) => request.get(`/products/${productId}/bids/current-price`),
 }

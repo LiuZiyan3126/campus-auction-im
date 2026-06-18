@@ -5,7 +5,7 @@ services:
     image: mysql:8.0.36
     container_name: caip-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?err}
       MYSQL_DATABASE: campus_auction
       MYSQL_CHARSET: utf8mb4
       MYSQL_COLLATION: utf8mb4_unicode_ci
@@ -41,10 +41,11 @@ services:
       dockerfile: ../deploy/Dockerfile.backend
     container_name: caip-backend
     environment:
+      DB_HOST: mysql
       DB_USERNAME: ${DB_USERNAME:-root}
-      DB_PASSWORD: ${DB_PASSWORD:-root}
+      DB_PASSWORD: ${DB_PASSWORD:?err}
       REDIS_HOST: redis
-      JWT_SECRET: ${JWT_SECRET:-change-this-secret-key-in-production-min-256-bits}
+      JWT_SECRET: ${JWT_SECRET:?err}
       FILE_UPLOAD_PATH: /data/uploads/images/
     ports:
       - "8080:8080"

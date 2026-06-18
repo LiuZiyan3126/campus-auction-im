@@ -19,7 +19,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResultVO<String> register(@Valid @RequestBody RegisterDTO dto) {
         userService.register(dto);
-        return ResultVO.ok("注册成功，请等待管理员审核");
+        return ResultVO.ok("注册成功");
     }
 
     @PostMapping("/login")

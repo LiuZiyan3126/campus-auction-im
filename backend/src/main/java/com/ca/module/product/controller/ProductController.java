@@ -98,4 +98,21 @@ public class ProductController {
         IPage<ProductCardVO> result = productService.myFavorites(userId, page, size);
         return ResultVO.ok(PageVO.of(result));
     }
+
+    @GetMapping("/my")
+    public ResultVO<PageVO<ProductCardVO>> myProducts(Authentication auth,
+                                                       @RequestParam(defaultValue = "1") int page,
+                                                       @RequestParam(defaultValue = "20") int size,
+                                                       @RequestParam(required = false) String status) {
+        Long userId = (Long) auth.getPrincipal();
+        IPage<ProductCardVO> result = productService.myProducts(userId, page, size, status);
+        return ResultVO.ok(PageVO.of(result));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResultVO<Void> delete(Authentication auth, @PathVariable Long id) {
+        Long userId = (Long) auth.getPrincipal();
+        productService.delete(userId, id);
+        return ResultVO.ok(null);
+    }
 }

@@ -12,6 +12,7 @@ import com.ca.module.user.entity.User;
 import com.ca.module.user.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -71,7 +72,7 @@ class ChatServiceTest {
         var result = chatService.createConversation(1L, 2L, null);
 
         assertThat(result.getId()).isEqualTo(1L);
-        verify(conversationMapper, never()).insert(any());
+        verify(conversationMapper, never()).insert(any(Conversation.class));
     }
 
     // ===== 敏感词过滤测试 =====
@@ -93,7 +94,7 @@ class ChatServiceTest {
 
         // 验证消息被过滤
         ArgumentCaptor<Message> captor = ArgumentCaptor.forClass(Message.class);
-        verify(messageMapper).insert(captor.capture());
+        verify(messageMapper).insert(captor.<Message>capture());
         assertThat(captor.getValue().getContent()).doesNotContain("赌博");
         assertThat(captor.getValue().getContent()).contains("***");
     }

@@ -7,6 +7,10 @@
     <title>校园二手拍卖平台</title>
   </head>
   <body>
+    <script>
+      // polyfill: sockjs-client / @stomp/stompjs 需要 global 变量
+      window.global = window;
+    </script>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

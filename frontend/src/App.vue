@@ -4,7 +4,7 @@ import Footer from '@/components/Footer.vue'
 </script>
 
 <template>
-  <div id="app-container">
+  <div class="app-shell">
     <NavBar />
     <main class="main-content">
       <router-view />
@@ -14,8 +14,22 @@ import Footer from '@/components/Footer.vue'
 </template>
 
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', sans-serif; }
-#app-container { min-height: 100vh; display: flex; flex-direction: column; }
-.main-content { flex: 1; max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; }
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.main-content {
+  flex: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  width: 100%;
+}
+
+/* Page transitions */
+.page-fade-enter-active { transition: opacity .2s ease, transform .2s ease; }
+.page-fade-leave-active { transition: opacity .15s ease, transform .15s ease; }
+.page-fade-enter-from { opacity: 0; transform: translateY(8px); }
+.page-fade-leave-to { opacity: 0; transform: translateY(-8px); }
 </style>

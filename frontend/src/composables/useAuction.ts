@@ -25,7 +25,7 @@ export function useAuction(productId: number) {
 
   async function fetchCurrentPrice() {
     try {
-      const res = await request.get<ResultVO<number>>(`/products/${productId}/current-price`)
+      const res = await request.get<ResultVO<number>>(`/products/${productId}/bids/current-price`)
       currentPrice.value = res.data.data
     } catch {
       logger.error('获取当前价失败')

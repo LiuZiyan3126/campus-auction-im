@@ -1,6 +1,7 @@
 package com.ca.module.chat.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ca.common.exception.BusinessException;
@@ -114,22 +115,24 @@ public class ChatServiceImpl implements ChatService {
         conv.setLastMessageAt(msg.getCreatedAt());
         conversationMapper.updateById(conv);
 
-        // WebSocket实时推送
+        // WebSocket实时推送给双方
         Long receiverId = conv.getUser1Id().equals(senderId) ? conv.getUser2Id() : conv.getUser1Id();
         MessageVO vo = toMessageVO(msg);
-        messagingTemplate.convertAndSendToUser(String.valueOf(receiverId), "/queue/chat",
-                Map.of("type", "NEW_MESSAGE", "payload", vo, "timestamp", System.currentTimeMillis()));
+        Map<String, Object> wsMsg = Map.of("type", "NEW_MESSAGE", "payload", vo, "timestamp", System.currentTimeMillis());
+        messagingTemplate.convertAndSendToUser(String.valueOf(receiverId), "/queue/chat", wsMsg);
+        messagingTemplate.convertAndSendToUser(String.valueOf(senderId), "/queue/chat", wsMsg);
 
         return vo;
     }
 
     @Override
     public void markAsRead(Long userId, Long conversationId) {
-        messageMapper.update(null, new LambdaQueryWrapper<Message>()
+        LambdaUpdateWrapper<Message> updateWrapper = new LambdaUpdateWrapper<Message>()
                 .eq(Message::getConversationId, conversationId)
                 .ne(Message::getSenderId, userId)
                 .eq(Message::getIsRead, 0)
-                .set(Message::getIsRead, 1));
+                .set(Message::getIsRead, 1);
+        messageMapper.update(null, updateWrapper);
     }
 
     private ConversationVO buildConversationVO(Conversation conv, Long currentUserId) {
