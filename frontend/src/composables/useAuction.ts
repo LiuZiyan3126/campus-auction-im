@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import { useWebSocket } from './useWebSocket'
 import request from '@/api/request'
 import type { ResultVO, WSMessage } from '@/types'
@@ -43,9 +44,26 @@ export function useAuction(productId: number) {
 
   async function placeBid(amount: number) {
     if (bidding.value) return
+    if (!amount || amount <= 0) {
+      ElMessage.warning('请输入有效的出价金额')
+      return
+    }
     bidding.value = true
     try {
       await request.post(`/products/${productId}/bids`, { bidAmount: amount })
+      ElMessage.success('出价成功')
+      currentPrice.value = amount
+      bids.value.unshift({
+        id: 0,
+        productId: productId,
+        bidderId: 0,
+        bidderName: '我',
+        bidAmount: amount,
+        bidTime: new Date().toISOString(),
+      })
+    } catch (e: unknown) {
+      const err = e as { response?: { data?: { message?: string } } }
+      ElMessage.error(err.response?.data?.message || '出价失败')
     } finally {
       setTimeout(() => { bidding.value = false }, 1000)
     }
@@ -56,15 +74,19 @@ export function useAuction(productId: number) {
     subscribe(`/topic/auction/${productId}`, (msg: WSMessage) => {
       if (msg.type === 'NEW_BID') {
         const p = msg.payload as Record<string, unknown>
+        const newBidAmount = Number(p.bidAmount)
         currentPrice.value = Number(p.currentPrice || p.bidAmount)
-        bids.value.unshift({
-          id: 0,
-          productId: productId,
-          bidderId: Number(p.bidderId),
-          bidderName: String(p.bidderName || ''),
-          bidAmount: Number(p.bidAmount),
-          bidTime: String(p.bidTime || ''),
-        })
+        // 去重：避免本地已插入的出价重复
+        if (!bids.value.some(b => b.bidAmount === newBidAmount && b.bidderName === '我')) {
+          bids.value.unshift({
+            id: 0,
+            productId: productId,
+            bidderId: Number(p.bidderId),
+            bidderName: String(p.bidderName || ''),
+            bidAmount: newBidAmount,
+            bidTime: String(p.bidTime || ''),
+          })
+        }
       } else if (msg.type === 'AUCTION_END') {
         const p = msg.payload as Record<string, unknown>
         winner.value = {

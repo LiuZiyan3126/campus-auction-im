@@ -9,7 +9,7 @@ spring:
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:3306/campus_auction?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:}
+    password: ${DB_PASSWORD:050103}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 20
@@ -54,7 +54,7 @@ mybatis-plus:
       logic-not-delete-value: "NULL"
 
 jwt:
-  secret: ${JWT_SECRET:}
+  secret: ${JWT_SECRET:campus-auction-jwt-secret-key-2026-min-256-bits}
   access-expiration: 1800000
   refresh-expiration: 604800000
 
