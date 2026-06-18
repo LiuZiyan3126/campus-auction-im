@@ -45,6 +45,27 @@ FILE_UPLOAD_PATH=./uploads/images/
 
 ### 3. 启动后端（Flyway 首次启动自动建表）
 
+**方式一：IntelliJ IDEA（推荐）**
+
+1. 用 IDEA 打开 `backend/` 目录（File → Open → 选择 `D:\lab\SElab\backend`）
+2. 等待 Maven 依赖下载完成（右下角进度条消失）
+
+**IDEA 必要配置（首次打开后检查）：**
+
+| 配置项 | 路径 | 设置值 |
+|--------|------|--------|
+| JDK | File → Project Structure → SDK | **JDK 17+** |
+| Lombok 插件 | File → Settings → Plugins | 搜索安装 **Lombok** |
+| 注解处理器 | File → Settings → Build → Compiler → Annotation Processors | 勾选 **Enable annotation processing** |
+| 数据库密码 | `application.yml` 第 12 行 | 改为你的 MySQL 密码 |
+
+3. 确保 MySQL 和 Redis 已启动
+4. 找到 `src/main/java/com/ca/CaApplication.java`
+5. 右键 → Run 'CaApplication.main()'，或点击 `main` 方法左侧的绿色三角
+6. 控制台出现 `Started CaApplication` 即启动成功
+
+**方式二：命令行**
+
 ```bash
 cd backend
 ./mvnw spring-boot:run        # Linux/Mac
